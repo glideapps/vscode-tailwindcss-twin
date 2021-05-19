@@ -1,5 +1,5 @@
 import findRightBlockComment from "./findRightBlockComment"
-import findRightBracket from "./findRightBracket"
+import { findRightBracket, findRightBracketEscapeComments } from "./findRightBracket"
 import * as tw from "./token"
 
 function trimLeft(str: string, start = 0, end = str.length): [number, number] {
@@ -148,7 +148,12 @@ export default function findAllElements({
 				context = baseContext.slice()
 			}
 		} else if (cssProperty) {
-			const closedBracket = findRightBracket({ input, start: reg.lastIndex - 1, end, brackets: ["[", "]"] })
+			const closedBracket = findRightBracketEscapeComments({
+				input,
+				start: reg.lastIndex - 1,
+				end,
+				brackets: ["[", "]"],
+			})
 			if (typeof closedBracket !== "number") {
 				result.error = {
 					message: `except to find a ']' to match the '['`,

@@ -279,11 +279,73 @@ export interface SelectedComment {
 	token: Token
 }
 
-export function removeComments(text: string) {
-	return text.replace(/(\/\/[^\n]*\n?)|(\/\*[\S\s]*?\*\/)/gs, "")
+function formatCssValueSpace(text: string) {
+	const fields = text.replace(/[\s;]+/g, " ").split(",")
+	return fields.map(v => v.trim()).join(", ")
 }
 
 export function formatCssValue(text: string) {
-	const fields = text.replace(/[\s;]+/g, " ").split(",")
-	return fields.map(v => v.trim()).join(", ")
+	const reg = /(')|(")|(\/\/)|(\/\*)/gs
+	let match: RegExpExecArray | null
+	let output = ""
+	reg.lastIndex = 0
+	let k = 0
+	while ((match = reg.exec(text))) {
+		const [, singleQuote, doubleQuote, lineComment, blockComment] = match
+		if (lineComment) {
+			output += formatCssValueSpace(text.slice(k, reg.lastIndex - 2))
+		} else if (blockComment) {
+			output += formatCssValueSpace(text.slice(k, reg.lastIndex - 2))
+		} else {
+			output += text.slice(k, reg.lastIndex)
+		}
+		if (singleQuote) {
+			let i = reg.lastIndex
+			while (i < text.length) {
+				if (text[i] === "'") {
+					i++
+					break
+				}
+				i++
+			}
+			output += text.slice(reg.lastIndex, i)
+			reg.lastIndex = i
+		} else if (doubleQuote) {
+			let i = reg.lastIndex
+			while (i < text.length) {
+				if (text[i] === '"') {
+					i++
+					break
+				}
+				i++
+			}
+			output += text.slice(reg.lastIndex, i)
+			reg.lastIndex = i
+		} else if (lineComment) {
+			let i = reg.lastIndex
+			while (i < text.length) {
+				if (text[i] === "\n") {
+					i++
+					break
+				}
+				i++
+			}
+			reg.lastIndex = i
+		} else if (blockComment) {
+			let i = reg.lastIndex
+			while (i < text.length) {
+				if (text.slice(i, i + 2) === "*/") {
+					i += 2
+					break
+				}
+				i++
+			}
+			reg.lastIndex = i
+		}
+		k = reg.lastIndex
+	}
+	if (k < text.length) {
+		output += formatCssValueSpace(text.slice(k))
+	}
+	return output
 }

@@ -53,7 +53,7 @@ export default function hover(
 				const values = [
 					"```scss",
 					"& {",
-					`\t${key}: ${tw.formatCssValue(tw.removeComments(value))}${important ? " !important" : ""};`,
+					`\t${key}: ${tw.formatCssValue(value)}${important ? " !important" : ""};`,
 					"}",
 					"```\n",
 				]

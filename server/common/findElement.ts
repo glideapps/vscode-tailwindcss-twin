@@ -1,5 +1,5 @@
 import findRightBlockComment from "./findRightBlockComment"
-import findRightBracket from "./findRightBracket"
+import { findRightBracket, findRightBracketEscapeComments } from "./findRightBracket"
 import * as tw from "./token"
 
 function trimLeft(str: string, start = 0, end = str.length) {
@@ -157,7 +157,12 @@ export function completeElement({
 				context = baseContext.slice()
 			}
 		} else if (cssProperty) {
-			const closedBracket = findRightBracket({ input, start: reg.lastIndex - 1, end, brackets: ["[", "]"] })
+			const closedBracket = findRightBracketEscapeComments({
+				input,
+				start: reg.lastIndex - 1,
+				end,
+				brackets: ["[", "]"],
+			})
 			if (typeof closedBracket !== "number") {
 				return {
 					token: {
@@ -424,7 +429,12 @@ export function hoverElement({
 				context = baseContext.slice()
 			}
 		} else if (cssProperty) {
-			const closedBracket = findRightBracket({ input, start: reg.lastIndex - 1, end, brackets: ["[", "]"] })
+			const closedBracket = findRightBracketEscapeComments({
+				input,
+				start: reg.lastIndex - 1,
+				end,
+				brackets: ["[", "]"],
+			})
 			if (typeof closedBracket !== "number") {
 				return {
 					token: {
