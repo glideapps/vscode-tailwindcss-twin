@@ -50,6 +50,26 @@
         }
       }
     },
+    "css-function": {
+      "begin": "([\\w-]+)(\\()",
+      "beginCaptures": {
+        "1": {
+          "name": "support.function.url.css.twin"
+        }
+      },
+      "end": "\\)",
+      "patterns": [
+        {
+          "include": "#qstring-double"
+        },
+        {
+          "include": "#qstring-single"
+        },
+        {
+          "include": "#shortcss-comment"
+        }
+      ]
+    },
     "shortcss-comment": {
       "patterns": [
         {
@@ -138,6 +158,9 @@
         },
         {
           "include": "#qstring-single"
+        },
+        {
+          "include": "#css-function"
         },
         {
           "include": "#shortcss-comment"
