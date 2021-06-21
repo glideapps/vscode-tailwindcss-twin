@@ -8,9 +8,14 @@ import parseThemeValue from "~/common/parseThemeValue"
 import * as tw from "~/common/token"
 import type { Tailwind } from "~/tailwind"
 import type { Cache, ServiceOptions } from "~/twLanguageService"
+import { arbitraryValueDocs } from "./arbitraryValue"
 import { cssDataManager } from "./cssData"
 
-const cssProperties = cssDataManager.getProperties().map(c => c.name)
+const cssProperties = cssDataManager
+	.getProperties()
+	.map(c => c.name)
+	.concat(Object.keys(arbitraryValueDocs))
+
 const csspropSearcher = new Fuse(cssProperties, { includeScore: true, isCaseSensitive: true })
 
 export function validate(document: TextDocument, state: Tailwind, options: ServiceOptions, cache: Cache) {
