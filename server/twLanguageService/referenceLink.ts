@@ -1,3 +1,4 @@
+import { arbitraryValueDocs } from "./arbitraryValue"
 import docs from "./docs.yaml"
 import references from "./references.yaml"
 
@@ -24,6 +25,11 @@ export function getReferenceLinks(keyword: string) {
 			}
 		}
 	}
+	if (arbitraryValueDocs[keyword]) {
+		const url = arbitraryValueDocs[keyword]
+		const match = url.match(last)
+		links.push({ name: match?.[0] || "", url })
+	}
 	return links
 }
 
@@ -44,6 +50,11 @@ export function getName(keyword: string) {
 		const text = match?.[0] || ""
 		if (!originUrl || text) {
 			return originUrl ? `${text}` : "twin.macro"
+		}
+	} else if (arbitraryValueDocs[keyword]) {
+		const url = arbitraryValueDocs[keyword]
+		if (docs[url]) {
+			return docs[url].name
 		}
 	}
 	return undefined

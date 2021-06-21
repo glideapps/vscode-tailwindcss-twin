@@ -1,7 +1,7 @@
 import { IPropertyData } from "vscode-css-languageservice"
 import * as lsp from "vscode-languageserver"
 import * as languageFacts from "./cssData"
-import { cssDataManager, getEntryDescription, units } from "./cssData"
+import { cssDataManager, getEntryDescription } from "./cssData"
 
 function isDeprecated(entry: IPropertyData): boolean {
 	if (entry.status && (entry.status === "nonstandard" || entry.status === "obsolete")) {
@@ -58,7 +58,7 @@ export function getCompletionsForDeclarationValue(
 
 		items.push(...getValueEnumProposals(range, entry))
 		items.push(...getCSSWideKeywordProposals(range))
-		items.push(...getUnitProposals(currentWord, range, entry))
+		items.push(...getUnitProposals(currentWord, range, entry.restrictions))
 	}
 
 	// TODO: apply context
@@ -172,13 +172,17 @@ function getCSSWideKeywordProposals(range: lsp.Range): lsp.CompletionItem[] {
 	})
 }
 
-function getUnitProposals(value: string, range: lsp.Range, entry: IPropertyData): lsp.CompletionItem[] {
+export function getUnitProposals(
+	value: string,
+	range: lsp.Range,
+	restrictions?: string[] | undefined,
+): lsp.CompletionItem[] {
 	const items: lsp.CompletionItem[] = []
 	const numMatch = value.match(/^-?\d[.\d+]*/)
 	const currentWord = numMatch?.[0] ?? "0"
 
-	for (const restriction of entry.restrictions ?? []) {
-		for (const unit of units[restriction] ?? []) {
+	for (const restriction of restrictions ?? []) {
+		for (const unit of languageFacts.units[restriction] ?? []) {
 			const insertText = currentWord + unit
 			items.push({
 				label: insertText,
