@@ -92,6 +92,7 @@ export const arbitraryValueMapping: Record<string, string> = {
 	"skew-y-": "<angle>",
 	"fill-": "background-color", // <color>
 	"stroke-": "border-width", // <line-width>
+	"cursor-": "cursor",
 }
 
 export const arbitraryValueDocs: Record<string, string> = {
@@ -188,6 +189,7 @@ export const arbitraryValueDocs: Record<string, string> = {
 	"skew-y-": "https://tailwindcss.com/docs/skew",
 	"fill-": "https://tailwindcss.com/docs/fill",
 	"stroke-": "https://tailwindcss.com/docs/stroke",
+	"cursor-": "https://tailwindcss.com/docs/cursor",
 }
 
 export default arbitraryValueMapping
