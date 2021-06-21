@@ -77,6 +77,11 @@ export function getDescription(keyword: string): string | undefined {
 		if (!originUrl || text) {
 			return originUrl ? `${text}` : "twin.macro"
 		}
+	} else if (arbitraryValueDocs[keyword]) {
+		const url = arbitraryValueDocs[keyword]
+		if (docs[url]) {
+			return docs[url].desc
+		}
 	}
 	return undefined
 }

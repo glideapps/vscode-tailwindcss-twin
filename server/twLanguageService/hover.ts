@@ -47,22 +47,7 @@ export default async function hover(
 			)
 
 			if (selection.token.kind === tw.TokenKind.CssProperty) {
-				if (arbitraryValueDocs[selection.token.key.text]) {
-					const className = selection.token.token.text.replace(/\s/g, "")
-					const twin = await state.jit(className)
-					const content = renderClassnameJIT({
-						key: className,
-						twin,
-						important: selection.important,
-						options,
-					})
-					if (content) {
-						return {
-							range,
-							contents: { kind: lsp.MarkupKind.Markdown, value: content },
-						}
-					}
-				} else {
+				if (!arbitraryValueDocs[selection.token.key.text]) {
 					const key = selection.token.key.toKebab()
 					const value = selection.token.value.text
 					const important = selection.important
@@ -92,23 +77,49 @@ export default async function hover(
 
 			if (
 				selection.token.kind === tw.TokenKind.ClassName &&
-				!state.twin.isSuggestedClassName(selection.variants.texts, selection.token.token.text)
+				!state.twin.isSuggestedClassName(selection.variants.texts, text)
 			) {
 				return undefined
 			}
 
-			const markdown = getHoverTwinMarkdown({
-				kind,
-				selection,
-				state,
-				options,
-			})
+			if (selection.token.kind === tw.TokenKind.CssProperty) {
+				if (kind !== PatternKind.Twin || !arbitraryValueDocs[selection.token.key.text]) return undefined
+			}
+
+			let markdown: lsp.MarkupContent | undefined
+
+			if (selection.token.kind === tw.TokenKind.CssProperty) {
+				const className = text.replace(/\s/g, "")
+				const twin = await state.jit(className)
+				const content = renderClassnameJIT({
+					key: className,
+					twin,
+					important: selection.important,
+					options,
+				})
+				if (content) {
+					markdown = { kind: lsp.MarkupKind.Markdown, value: content }
+				}
+			} else {
+				markdown = getHoverTwinMarkdown({
+					kind,
+					selection,
+					state,
+					options,
+				})
+			}
 
 			if (!markdown) {
 				return undefined
 			}
 
-			const keyword = text.replace(new RegExp(`^${state.config.prefix}`), "").replace(state.separator, "")
+			let keyword = ""
+			if (selection.token.kind === tw.TokenKind.CssProperty) {
+				keyword = selection.token.key.text
+			} else {
+				text.replace(new RegExp(`^${state.config.prefix}`), "").replace(state.separator, "")
+			}
+
 			let title = ""
 			if (options.references) {
 				const type = getDescription(keyword)

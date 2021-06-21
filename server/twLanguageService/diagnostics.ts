@@ -11,12 +11,14 @@ import type { Cache, ServiceOptions } from "~/twLanguageService"
 import { arbitraryValueDocs } from "./arbitraryValue"
 import { cssDataManager } from "./cssData"
 
-const cssProperties = cssDataManager
-	.getProperties()
-	.map(c => c.name)
-	.concat(Object.keys(arbitraryValueDocs))
+const cssProperties = cssDataManager.getProperties().map(c => c.name)
 
 const csspropSearcher = new Fuse(cssProperties, { includeScore: true, isCaseSensitive: true })
+
+const arbitraryValuePropSearcher = new Fuse(Object.keys(arbitraryValueDocs), {
+	includeScore: true,
+	isCaseSensitive: true,
+})
 
 export function validate(document: TextDocument, state: Tailwind, options: ServiceOptions, cache: Cache) {
 	const diagnostics: Diagnostic[] = []
@@ -358,7 +360,9 @@ function checkTwinCssProperty(item: tw.CssProperty, document: TextDocument, offs
 		if (text.startsWith("--")) {
 			return result
 		}
-		const ret = csspropSearcher.search(item.prop.toKebab())
+
+		const searcher = item.prop.text.endsWith("-") ? arbitraryValuePropSearcher : csspropSearcher
+		const ret = searcher.search(item.prop.toKebab())
 		const score = ret?.[0]?.score
 		if (score == undefined) {
 			result.push({
