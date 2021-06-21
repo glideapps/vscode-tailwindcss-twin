@@ -7,16 +7,17 @@ import parseThemeValue from "~/common/parseThemeValue"
 import * as tw from "~/common/token"
 import { Tailwind } from "~/tailwind"
 import type { ServiceOptions } from "~/twLanguageService"
+import { arbitraryValueDocs } from "./arbitraryValue"
 import { cssDataManager, getEntryDescription } from "./cssData"
-import { renderClassname, renderVariant } from "./markdown"
+import { renderClassname, renderClassnameJIT, renderVariant } from "./markdown"
 import { getDescription, getReferenceLinks } from "./referenceLink"
 
-export default function hover(
+export default async function hover(
 	document: TextDocument,
 	position: lsp.Position,
 	state: Tailwind,
 	options: ServiceOptions,
-): lsp.Hover | undefined {
+): Promise<lsp.Hover | undefined> {
 	try {
 		const result = canMatch(document, position, true, options.jsxPropImportChecking)
 		if (!result) {
@@ -46,29 +47,46 @@ export default function hover(
 			)
 
 			if (selection.token.kind === tw.TokenKind.CssProperty) {
-				const key = selection.token.key.toKebab()
-				const value = selection.token.value.text
-				const important = selection.important
+				if (arbitraryValueDocs[selection.token.key.text]) {
+					const className = selection.token.token.text.replace(/\s/g, "")
+					const twin = await state.jit(className)
+					const content = renderClassnameJIT({
+						key: className,
+						twin,
+						important: selection.important,
+						options,
+					})
+					if (content) {
+						return {
+							range,
+							contents: { kind: lsp.MarkupKind.Markdown, value: content },
+						}
+					}
+				} else {
+					const key = selection.token.key.toKebab()
+					const value = selection.token.value.text
+					const important = selection.important
 
-				const values = [
-					"```scss",
-					"& {",
-					`\t${key}: ${tw.formatCssValue(tw.removeComments(value))}${important ? " !important" : ""};`,
-					"}",
-					"```\n",
-				]
+					const values = [
+						"```scss",
+						"& {",
+						`\t${key}: ${tw.formatCssValue(tw.removeComments(value))}${important ? " !important" : ""};`,
+						"}",
+						"```\n",
+					]
 
-				const entry = cssDataManager.getProperty(key)
-				if (entry) {
-					values.unshift(getEntryDescription(entry, true).value + "\n\n---\n")
-				}
+					const entry = cssDataManager.getProperty(key)
+					if (entry) {
+						values.unshift(getEntryDescription(entry, true).value + "\n\n---\n")
+					}
 
-				return {
-					range,
-					contents: {
-						kind: lsp.MarkupKind.Markdown,
-						value: values.join("\n"),
-					},
+					return {
+						range,
+						contents: {
+							kind: lsp.MarkupKind.Markdown,
+							value: values.join("\n"),
+						},
+					}
 				}
 			}
 

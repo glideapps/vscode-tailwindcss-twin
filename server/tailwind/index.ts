@@ -144,4 +144,29 @@ export class Tailwind {
 		}
 		return dlv(this.config, keys)
 	}
+
+	async jit(className: string) {
+		className = className.replace(/\s/g, "")
+
+		const config: TailwindConfigJS = {
+			mode: "jit",
+			prefix: "",
+			purge: {
+				defaultExtractor: content => [content],
+				content: [{ raw: className }],
+			},
+		}
+
+		const processer = this.postcss([this.tailwindcss(config)])
+		const results = await Promise.all([
+			processer.process("@tailwind base;@tailwind components;", { from: undefined }),
+			processer.process("@tailwind utilities;", { from: undefined }),
+		])
+
+		return new Twin(
+			preprocessConfig(config, true),
+			{ result: results[0], source: "components" },
+			{ result: results[1], source: "utilities" },
+		)
+	}
 }

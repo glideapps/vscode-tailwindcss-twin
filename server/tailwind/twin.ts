@@ -134,8 +134,9 @@ interface IMap<T> extends Omit<Array<KeyValuePair<T>>, "keys" | "get"> {
 
 type Purge =
 	| {
-			enabled: boolean
-			content: string[]
+			enabled?: boolean
+			content?: string[] | Array<{ raw: string; extension?: string }>
+			defaultExtractor?: (s: string) => string[]
 	  }
 	| string[]
 
@@ -152,25 +153,25 @@ export type TailwindConfigJS = {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function preprocessConfig(config: any): any {
+export function preprocessConfig(config: any, silent?: boolean): any {
 	const cfg = { ...config } as TailwindConfigJS
 	cfg.separator = cfg.separator ?? ":"
 	if (cfg.separator !== ":") {
-		console.info("Option: `separator` forced to be set ':'.")
+		if (!silent) console.info("Option: `separator` forced to be set ':'.")
 	}
 	cfg.separator = __INNER_TAILWIND_SEPARATOR__
 
 	if (cfg.purge instanceof Array) {
 		if (cfg.purge.length > 0) {
-			console.info("Option: `purge` is ignored.")
+			if (!silent) console.info("Option: `purge` is ignored.")
 		}
 	} else if (cfg?.purge?.content != null || cfg?.purge?.enabled) {
-		console.info("Option: `purge` is ignored.")
+		if (!silent) console.info("Option: `purge` is ignored.")
 	}
 	cfg.purge = { enabled: false, content: [] }
 
 	if (cfg?.mode === "jit") {
-		console.info("Option: `mode` forced to be set 'aot'.")
+		if (!silent) console.info("Option: `mode` forced to be set 'aot'.")
 		cfg.mode = "aot"
 	}
 
@@ -180,7 +181,7 @@ export function preprocessConfig(config: any): any {
 	}
 
 	if (cfg?.darkMode !== "media" && cfg?.darkMode !== "class") {
-		console.info("Option: `darkMode` forced to be set 'media'.")
+		if (!silent) console.info("Option: `darkMode` forced to be set 'media'.")
 		cfg.darkMode = "media"
 	}
 
