@@ -1,8 +1,15 @@
 {
+<<<<<<< HEAD
   "name": "tailwindcss-intellisense-twin",
   "displayName": "Tailwind Twin IntelliSense",
   "markdownDescription": "Tailwind VSCode Extension for twin.macro",
   "version": "0.12.2",
+=======
+  "name": "tailwindcss-intellisense-twin-glide",
+  "displayName": "Tailwind Twin IntelliSense - Glide",
+  "description": "Glide version of Tailwind VSCode Extension for twin.macro",
+  "version": "0.8.5",
+>>>>>>> Update responsive sizes prefix and extension name
   "author": "lightyen",
   "license": "MIT",
   "private": true,
