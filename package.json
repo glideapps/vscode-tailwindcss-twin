@@ -1,7 +1,7 @@
 {
-  "name": "tailwindcss-intellisense-twin",
-  "displayName": "Tailwind Twin IntelliSense",
-  "description": "Tailwind VSCode Extension for twin.macro",
+  "name": "tailwindcss-intellisense-twin-glide",
+  "displayName": "Tailwind Twin IntelliSense - Glide",
+  "description": "Glide version of Tailwind VSCode Extension for twin.macro",
   "version": "0.8.5",
   "author": "lightyen",
   "license": "MIT",
