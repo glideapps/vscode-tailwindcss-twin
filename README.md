@@ -1,101 +1,56 @@
-# Tailwind Twin IntelliSense
+<p align="center">
+  <img src="https://i.imgur.com/U2PIUW2.jpeg">
+</p>
 
-This is a Tailwind CSS IntelliSense VSCode Extension which supports [twin.macro](https://github.com/ben-rogerson/twin.macro) features.
+<h1 align="center">Tailwind Twin IntelliSense</h1>
+
+<div align="center">
+ Tailwind CSS IntelliSense VSCode Extension which supports Glide specific tailwind classes
+</div>
+
+<br>
+
+## Install Instructions
+
+**Before installing**:
+
+-   Verify any existing `Tailwind CSS IntelliSense` is uninstalled from your VS Code.
+-   Have `yarn` installed.
+
+```bash
+npm install --save-dev @glideapps/prettier-plugin-glide-tailwind
+
+git clone https://github.com/glideapps/vscode-tailwindcss-twin
+
+cd vscode-tailwindcss-twin
+
+yarn install
+yarn build
+yarn package
+```
+
+Then go to VSCode and open up your command palate and enter:
+
+`Extensions: Install from VISX...`
+
+Navigate to the location where you cloned the `vscode-tailwindcss-twin` repo where you'll find the VSIX file called:
+
+`tailwindcss-intellisense-twin-0.8.5.vsix`
+
+It will ask you to restart your VScode, Restart it.
+
+_Important Note:_
+
+> Sometimes VScode will decide to install the extension in the marketplace instead of the fork. Might be because we need to change the name of the fork
 
 ## Features
 
-- auto completion
-- hover
-- color decoration
-- document references
-- diagnostics
+-   auto completion
+-   hover
+-   color decoration
+-   document references
+-   diagnostics
 
 ## Supported
 
 Support ONLY `react` and `twin.macro`
-
-## VSCode Settings
-
-### Recommended
-
-```json5
-{
-  // none
-}
-```
-
-### Defaults
-
-```json5
-{
-  "tailwindcss.colorDecorators": null, // inherit from "editor.colorDecorators"
-  "tailwindcss.references": true,
-  "tailwindcss.diagnostics": {
-    "enabled": true,
-    "conflict": "strict",
-    "emptyClass": true,
-    "emptyGroup": true,
-    "emptyCssProperty": true
-  },
-  "tailwindcss.preferVariantWithParentheses": false,
-  "tailwindcss.fallbackDefaultConfig": true,
-  "tailwindcss.enabled": true,
-  "tailwindcss.jsxPropImportChecking": true,
-  "tailwindcss.rootFontSize": true // false, true or number (default is 16)
-}
-```
-
-### Custom CompletionList Panel
-
-```json5
-// example
-{
-  "workbench.colorCustomizations": {
-    "[One Dark Pro]": {
-      "editorHoverWidget.background": "#17202ee5",
-      "editorHoverWidget.border": "#6a7473",
-      "editorSuggestWidget.background": "#17202ee5",
-      "editorSuggestWidget.border": "#6a7473",
-      "editorSuggestWidget.selectedBackground": "#009c70d0",
-      "editor.wordHighlightBackground": "#0000"
-    }
-  }
-}
-```
-
-### Custom Semantic Colors [(docs)](https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide)
-
-```json5
-{
-  "editor.tokenColorCustomizations": {
-    "[One Dark Pro]": {
-      "textMateRules": [
-        {
-          "scope": "entity.other.inherited-class.variant.twin",
-          "settings": {
-            "foreground": "#C678DD"
-          }
-        },
-        {
-          "scope": "support.type.css-prop.twin",
-          "settings": {
-            "foreground": "#5dbeff"
-          }
-        },
-        {
-          "scope": "punctuation.section.embedded.short-css",
-          "settings": {
-            "foreground": "#5dbeff"
-          }
-        },
-        {
-          "scope": "entity.name.variable.css-value.twin",
-          "settings": {
-            "foreground": "#c2bb76"
-          }
-        }
-      ]
-    }
-  }
-}
-```
