@@ -185,6 +185,13 @@ export function twin(context: ContextModule): Tailwind.ConfigJS {
 					}),
 				)
 
+				// Glide Selectors
+				addSelector("gp-sm", ".gp-sm &")
+				addSelector("gp-md", ".gp-md &")
+				addSelector("gp-lg", ".gp-lg &")
+				addSelector("gp-xl", ".gp-xl &")
+				addSelector("gp-2xl", ".gp-2xl &")
+
 				return
 
 				function addMedia(variant: string, value: string) {
