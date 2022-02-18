@@ -192,6 +192,12 @@ export function twin(context: ContextModule): Tailwind.ConfigJS {
 				addSelector("gp-xl", ".gp-xl &")
 				addSelector("gp-2xl", ".gp-2xl &")
 
+				addSelector("page-sm", ".page-sm &")
+				addSelector("page-md", ".page-md &")
+				addSelector("page-lg", ".page-lg &")
+				addSelector("page-xl", ".page-xl &")
+				addSelector("page-2xl", ".page-2xl &")
+
 				return
 
 				function addMedia(variant: string, value: string) {
