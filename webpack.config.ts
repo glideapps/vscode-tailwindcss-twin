@@ -2,7 +2,8 @@ import { CleanWebpackPlugin } from "clean-webpack-plugin"
 import ESLintPlugin from "eslint-webpack-plugin"
 import ForkTsCheckerPlugin from "fork-ts-checker-webpack-plugin"
 import path from "path"
-import TsPathsResolvePlugin from "ts-paths-resolve-plugin"
+import TerserPlugin from "terser-webpack-plugin"
+import { TsPathsResolvePlugin } from "ts-paths-resolve-plugin"
 import type { Compiler, Configuration } from "webpack"
 import { ExternalsPlugin } from "webpack"
 
@@ -19,42 +20,59 @@ class ExternalsVendorPlugin {
 	}
 }
 
-const clientWorkspaceFolder = path.resolve(__dirname, "client")
-const serverWorkspaceFolder = path.resolve(__dirname, "server")
+const clientWorkspaceFolder = path.resolve(__dirname, "src")
 
-const configClient: Configuration = {
+const configExtension: Configuration = {
 	target: "node",
 	mode: process.env.NODE_ENV === "production" ? "production" : "development",
-	devtool: process.env.NODE_ENV === "production" ? "inline-source-map" : "source-map",
+	devtool: "source-map",
 	entry: path.join(clientWorkspaceFolder, "extension.ts"),
 	output: {
 		path: path.resolve(__dirname, "dist"),
 		filename: "extension.js",
 		libraryTarget: "commonjs2",
-		devtoolModuleFilenameTemplate: "../[resource-path]",
+		devtoolModuleFilenameTemplate: "[absolute-resource-path]",
+	},
+	optimization: {
+		minimize: true,
+		minimizer: [
+			new TerserPlugin({
+				parallel: true,
+				minify: TerserPlugin.esbuildMinify,
+			}),
+		],
 	},
 	module: {
 		rules: [
 			{
 				test: /\.ts$/,
 				exclude: /node_modules|\.test\.ts$/,
-				use: [
-					{
-						loader: "ts-loader",
-						options: {
-							transpileOnly: true,
-							context: clientWorkspaceFolder,
+				use: {
+					loader: "swc-loader",
+					options: {
+						jsc: {
+							parser: {
+								syntax: "typescript",
+							},
+							target: "es2020",
+						},
+						module: {
+							type: "commonjs",
 						},
 					},
-				],
+				},
+			},
+			{
+				test: /\.ya?ml$/,
+				use: "js-yaml-loader",
 			},
 		],
 	},
 	resolve: {
 		extensions: [".ts", ".js", ".json"],
-		plugins: [new TsPathsResolvePlugin({ tsConfigPath: path.resolve(clientWorkspaceFolder, "tsconfig.json") })],
 	},
 	plugins: [
+		new TsPathsResolvePlugin({ tsConfigPath: path.resolve(clientWorkspaceFolder, "tsconfig.json") }),
 		new ForkTsCheckerPlugin({
 			typescript: {
 				configFile: path.resolve(clientWorkspaceFolder, "tsconfig.json"),
@@ -66,49 +84,4 @@ const configClient: Configuration = {
 	],
 }
 
-const configServer: Configuration = {
-	target: "node",
-	mode: process.env.NODE_ENV === "production" ? "production" : "development",
-	devtool: process.env.NODE_ENV === "production" ? "inline-source-map" : "source-map",
-	entry: path.join(serverWorkspaceFolder, "server.ts"),
-	output: {
-		path: path.resolve(__dirname, "dist"),
-		filename: "server/server.js",
-		libraryTarget: "commonjs2",
-		devtoolModuleFilenameTemplate: "../[resource-path]",
-	},
-	module: {
-		rules: [
-			{
-				test: /\.ts$/,
-				exclude: /node_modules|\.test\.ts$/,
-				use: [
-					{
-						loader: "ts-loader",
-						options: { transpileOnly: true, context: serverWorkspaceFolder },
-					},
-				],
-			},
-			{
-				test: /\.ya?ml$/,
-				use: "js-yaml-loader",
-			},
-		],
-	},
-	resolve: {
-		extensions: [".ts", ".js", ".json"],
-		plugins: [new TsPathsResolvePlugin({ tsConfigPath: path.resolve(serverWorkspaceFolder, "tsconfig.json") })],
-	},
-	plugins: [
-		new ForkTsCheckerPlugin({
-			typescript: {
-				configFile: path.resolve(serverWorkspaceFolder, "tsconfig.json"),
-			},
-		}),
-		new ExternalsVendorPlugin("typescript"),
-		new ESLintPlugin({ extensions: ["ts"] }),
-		new CleanWebpackPlugin({ cleanOnceBeforeBuildPatterns: ["server*"] }),
-	],
-}
-
-export default [configClient, configServer]
+export default configExtension

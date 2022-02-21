@@ -2,14 +2,10 @@
   "name": "tailwindcss-intellisense-twin-glide",
   "displayName": "Tailwind Twin IntelliSense - Glide",
   "description": "Glide version of Tailwind VSCode Extension for twin.macro",
-  "version": "0.8.5",
+  "version": "0.12.2",
   "author": "lightyen",
   "license": "MIT",
   "private": true,
-  "workspaces": [
-    "client",
-    "server"
-  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/lightyen/vscode-tailwindcss-twin.git"
@@ -32,7 +28,7 @@
     "typescript"
   ],
   "engines": {
-    "vscode": "^1.52.1"
+    "vscode": "^1.60.0"
   },
   "galleryBanner": {
     "color": "#191A1F",
@@ -46,64 +42,77 @@
   "scripts": {
     "test": "jest",
     "doit": "yarn upgrade-interactive --latest",
-    "build": "cross-env NODE_ENV=production TS_NODE_PROJECT=tsconfig.webpack.json webpack --config webpack.config.ts",
-    "watch": "cross-env NODE_ENV=development TS_NODE_PROJECT=tsconfig.webpack.json webpack --config webpack.config.ts --watch",
+    "analyze": "cross-env NODE_ENV=production webpack --config webpack.analyzer.js",
+    "build": "cross-env NODE_ENV=production webpack --config webpack.config.js",
+    "watch": "cross-env NODE_ENV=development webpack --config webpack.config.js --watch",
     "vscode:prepublish": "yarn build",
     "format": "prettier --write \"**/*.{ts,json,yml}\"",
     "check-format": "prettier --check \"**/*.{ts,json,yml}\"",
     "package": "vsce package --yarn"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.22",
-    "@typescript-eslint/eslint-plugin": "^4.21.0",
-    "@typescript-eslint/parser": "^4.21.0",
-    "clean-webpack-plugin": "^3.0.0",
-    "cross-env": "^7.0.3",
-    "eslint": "^7.23.0",
-    "eslint-config-prettier": "^8.1.0",
-    "eslint-plugin-prettier": "^3.3.1",
-    "eslint-webpack-plugin": "^2.5.2",
-    "fork-ts-checker-webpack-plugin": "^6.1.1",
-    "jest": "^26.6.3",
-    "js-yaml-loader": "^1.2.2",
-    "prettier": "^2.2.1",
-    "ts-jest": "^26.5.3",
-    "ts-loader": "^8.1.0",
-    "ts-node": "^9.1.1",
-    "ts-paths-resolve-plugin": "^5.2.2",
-    "vsce": "1.87.1",
-    "webpack": "^5.30.0",
-    "webpack-cli": "^4.6.0"
+    "@formatjs/intl": "1.15.2",
+    "@swc-node/register": "1.4.0",
+    "@swc/core": "1.2.110",
+    "@swc/jest": "0.2.5",
+    "@types/chroma-js": "2.1.3",
+    "@types/jest": "27.0.3",
+    "@types/js-beautify": "1.13.3",
+    "@types/node": "14.17.32",
+    "@types/source-map-support": "0.5.4",
+    "@types/vscode": "1.60.0",
+    "@types/webpack-env": "1.16.3",
+    "@typescript-eslint/eslint-plugin": "5.4.0",
+    "@typescript-eslint/parser": "5.4.0",
+    "@typescript-eslint/typescript-estree": "5.4.0",
+    "autoprefixer": "10.4.0",
+    "chroma-js": "2.1.2",
+    "clean-webpack-plugin": "4.0.0",
+    "cross-env": "7.0.3",
+    "esbuild": "0.13.14",
+    "eslint": "8.2.0",
+    "eslint-config-prettier": "8.3.0",
+    "eslint-plugin-prettier": "4.0.0",
+    "eslint-webpack-plugin": "3.1.1",
+    "fork-ts-checker-webpack-plugin": "6.4.0",
+    "fuse.js": "6.4.6",
+    "jest": "27.3.1",
+    "js-beautify": "1.14.0",
+    "js-yaml-loader": "1.2.2",
+    "prettier": "2.4.1",
+    "source-map-support": "0.5.20",
+    "swc-loader": "0.1.15",
+    "tailwind-types": "2.2.14",
+    "terser-webpack-plugin": "5.2.5",
+    "ts-paths-resolve-plugin": "5.4.1",
+    "typescript": "4.5.2",
+    "typescript-paths": "1.1.5",
+    "vsce": "2.3.0",
+    "vscode-css-languageservice": "5.1.8",
+    "vscode-languageclient": "7.0.0",
+    "vscode-languageserver": "7.0.0",
+    "vscode-uri": "3.0.2",
+    "webpack": "5.64.1",
+    "webpack-cli": "4.9.1",
+    "webpack-merge": "5.8.0",
+    "webpack-visualizer-plugin2": "1.0.0"
   },
   "dependencies": {
-    "postcss": "8.2.9",
-    "tailwindcss": "2.1.1",
-    "typescript": "4.2.3"
+    "postcss": "8.3.11",
+    "tailwindcss": "2.2.19"
   },
   "contributes": {
-    "configurationDefaults": {
-      "[javascript]": {
-        "editor.quickSuggestions": {
-          "strings": true
-        }
-      },
-      "[typescript]": {
-        "editor.quickSuggestions": {
-          "strings": true
-        }
-      },
-      "[javascriptreact]": {
-        "editor.quickSuggestions": {
-          "strings": true
-        }
-      },
-      "[typescriptreact]": {
-        "editor.quickSuggestions": {
-          "strings": true
-        }
-      }
-    },
     "grammars": [
+      {
+        "injectTo": [
+          "source.tsx",
+          "source.jsx",
+          "source.ts",
+          "source.js"
+        ],
+        "scopeName": "source.css.scss.tw",
+        "path": "./syntaxes/scss.tm.json"
+      },
       {
         "injectTo": [
           "source.tsx",
@@ -131,6 +140,16 @@
           "source.ts",
           "source.js"
         ],
+        "scopeName": "source.twin-screen",
+        "path": "./syntaxes/screen.tmLanguage.json"
+      },
+      {
+        "injectTo": [
+          "source.tsx",
+          "source.jsx",
+          "source.ts",
+          "source.js"
+        ],
         "scopeName": "source.twin-prop",
         "path": "./syntaxes/twProp.tmLanguage.json"
       },
@@ -149,24 +168,27 @@
       "title": "Tailwind Twin IntelliSense",
       "properties": {
         "tailwindcss.colorDecorators": {
-          "description": "%ext.settings.colorDecorators%",
-          "type": [
-            "boolean",
-            "null"
+          "markdownDescription": "%ext.settings.colorDecorators%",
+          "additionalItems": false,
+          "type": "string",
+          "enum": [
+            "on",
+            "off",
+            "inherit"
           ],
-          "default": null
+          "default": "inherit"
         },
         "tailwindcss.references": {
-          "description": "%ext.settings.references%",
+          "markdownDescription": "%ext.settings.references%",
           "type": "boolean",
           "default": true
         },
         "tailwindcss.diagnostics": {
-          "description": "%ext.settings.diagnostics%",
+          "markdownDescription": "%ext.settings.diagnostics%",
           "type": "object",
           "properties": {
             "enabled": {
-              "description": "%ext.settings.diagnostics.enabled%",
+              "markdownDescription": "%ext.settings.diagnostics.enabled%",
               "type": "boolean",
               "default": true
             },
@@ -178,7 +200,7 @@
                 "strict"
               ],
               "default": "strict",
-              "enumDescriptions": [
+              "enummarkdownDescriptions": [
                 "%ext.settings.diagnostics.conflict.none%",
                 "%ext.settings.diagnostics.conflict.loose%",
                 "%ext.settings.diagnostics.conflict.strict%"
@@ -214,24 +236,49 @@
           "default": true
         },
         "tailwindcss.enabled": {
-          "description": "%ext.settings.enabled%",
+          "markdownDescription": "%ext.settings.enabled%",
           "type": "boolean",
           "default": true
         },
         "tailwindcss.jsxPropImportChecking": {
-          "description": "%ext.settings.jsxPropImportChecking%",
+          "markdownDescription": "%ext.settings.jsxPropImportChecking%",
           "type": "boolean",
           "default": true
         },
         "tailwindcss.rootFontSize": {
-          "type": [
-            "number",
-            "boolean"
+          "type": "number",
+          "default": 16
+        },
+        "tailwindcss.hoverColorHint": {
+          "type": "string",
+          "enum": [
+            "none",
+            "hex",
+            "rgb",
+            "hsl"
           ],
-          "default": true
+          "default": "none"
+        },
+        "tailwindcss.logLevel": {
+          "type": "string",
+          "description": "%ext.settings.logging.level%",
+          "enum": [
+            "none",
+            "error",
+            "warning",
+            "info",
+            "debug",
+            "trace"
+          ],
+          "default": "info"
+        },
+        "tailwindcss.documentColors": {
+          "type": "boolean",
+          "default": false
         }
       }
     },
     "commands": []
-  }
+  },
+  "packageManager": "yarn@3.2.0-rc.1"
 }

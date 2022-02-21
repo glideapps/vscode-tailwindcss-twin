@@ -2,7 +2,9 @@
   <img src="https://i.imgur.com/U2PIUW2.jpeg">
 </p>
 
-<h1 align="center">Tailwind Twin IntelliSense</h1>
+This is a VSCode Tailwind IntelliSense Extension which supports [twin.macro](https://github.com/ben-rogerson/twin.macro)
+
+[Install via the Marketplace](https://marketplace.visualstudio.com/items?itemName=lightyen.tailwindcss-intellisense-twin)
 
 <div align="center">
  Tailwind CSS IntelliSense VSCode Extension which supports Glide specific tailwind classes
@@ -10,6 +12,7 @@
 
 <br>
 
+Support ONLY `*.tsx` and `*.jsx`
 ## Install Instructions
 
 **Before installing**:

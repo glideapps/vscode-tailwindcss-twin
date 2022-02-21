@@ -96,6 +96,36 @@
     }
   ],
   "repository": {
+    "qstring-double": {
+      "name": "string.quoted.double.twin",
+      "begin": "\"",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.twin"
+        }
+      },
+      "end": "(\")",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.string.end.twin"
+        }
+      }
+    },
+    "qstring-single": {
+      "name": "string.quoted.single.twin",
+      "begin": "'",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.twin"
+        }
+      },
+      "end": "(')",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.string.end.twin"
+        }
+      }
+    },
     "line-comment-end-single-quote": {
       "match": "(//)[^']*",
       "captures": {
@@ -162,26 +192,108 @@
         }
       }
     },
-    "expression-classname": {
-      "match": "((?:(?!\\/\\/|\\/\\*)[\\w\\-\\./])+)(!?)",
-      "captures": {
+    "expression-arbitrary-variant-single-quote": {
+      "contentName:": "meta.embedded.block.css.twin",
+      "begin": "(\\[)",
+      "end": "(\\]):",
+      "beginCaptures": {
         "1": {
-          "name": "support.constant.classname.twin"
-        },
-        "2": {
-          "name": "support.function.important-bang.classname.twin"
+          "name": "punctuation.section.embedded.arbitrary-variant.begin.twin"
         }
-      }
+      },
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.section.embedded.arbitrary-variant.end.twin"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#line-comment-end-single-quote"
+        },
+        {
+          "include": "#block-comment-end-single-quote"
+        },
+        {
+          "include": "source.css.scss.tw"
+        }
+      ]
     },
-    "expression-short-css": {
-      "name": "entity.name.variable.css-value.twin",
-      "begin": "([\\w-]+)(\\[)",
+    "expression-arbitrary-variant-double-quote": {
+      "contentName:": "meta.embedded.block.css.twin",
+      "begin": "(\\[)",
+      "end": "(\\]):",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.section.embedded.arbitrary-variant.begin.twin"
+        }
+      },
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.section.embedded.arbitrary-variant.end.twin"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#line-comment-end-double-quote"
+        },
+        {
+          "include": "#block-comment-end-double-quote"
+        },
+        {
+          "include": "source.css.scss.tw"
+        }
+      ]
+    },
+    "expression-short-css-single-quote": {
+      "contentName": "entity.name.variable.css-value.twin",
+      "begin": "(!?)((?:-{1,2})?(?:\\w+-)*\\w+)(\\[)",
       "end": "(\\])(!?)",
       "beginCaptures": {
         "1": {
-          "name": "support.type.css-prop.twin"
+          "name": "support.function.important-bang.short-css.twin"
         },
         "2": {
+          "name": "support.type.short-css.prop.twin"
+        },
+        "3": {
+          "name": "punctuation.section.embedded.short-css.begin.twin"
+        }
+      },
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.section.embedded.short-css.end.twin"
+        },
+        "2": {
+          "name": "support.function.important-bang.short-css.twin"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#line-comment-end-single-quote"
+        },
+        {
+          "include": "#block-comment-end-single-quote"
+        },
+        {
+          "include": "#css-value-content-bracket"
+        },
+        {
+          "include": "source.css.scss#property_values"
+        }
+      ]
+    },
+    "expression-short-css-double-quote": {
+      "contentName": "entity.name.variable.css-value.twin",
+      "begin": "(!?)((?:-{1,2})?(?:\\w+-)*\\w+)(\\[)",
+      "end": "(\\])(!?)",
+      "beginCaptures": {
+        "1": {
+          "name": "support.function.important-bang.short-css.twin"
+        },
+        "2": {
+          "name": "support.type.short-css.prop.twin"
+        },
+        "3": {
           "name": "punctuation.section.embedded.short-css.begin.twin"
         }
       },
@@ -199,15 +311,44 @@
         },
         {
           "include": "#block-comment-end-double-quote"
+        },
+        {
+          "include": "#css-value-content-bracket"
+        },
+        {
+          "include": "source.css.scss#property_values"
+        }
+      ]
+    },
+    "css-value-content-bracket": {
+      "contentName": "string.twin",
+      "begin": "(\\[)",
+      "end": "(\\])",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.section.begin.bracket.square.twin"
+        }
+      },
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.section.end.bracket.square.twin"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#css-value-content-bracket"
         }
       ]
     },
     "variant-group-expression": {
-      "begin": "(\\()",
+      "begin": "(!?)(\\()",
       "end": "(\\))(!?)",
       "name": "meta.block.variant-group.twin",
       "beginCaptures": {
         "1": {
+          "name": "support.function.important-bang.variant-group.twin"
+        },
+        "2": {
           "name": "punctuation.definition.bracket.variant-group.begin.twin"
         }
       },
@@ -241,10 +382,13 @@
           "include": "#block-comment-end-single-quote"
         },
         {
+          "include": "#expression-arbitrary-variant-single-quote"
+        },
+        {
           "include": "#expression-variant"
         },
         {
-          "include": "#expression-short-css"
+          "include": "#expression-short-css-single-quote"
         },
         {
           "include": "#variant-group-expression"
@@ -260,10 +404,13 @@
           "include": "#block-comment-end-double-quote"
         },
         {
+          "include": "#expression-arbitrary-variant-double-quote"
+        },
+        {
           "include": "#expression-variant"
         },
         {
-          "include": "#expression-short-css"
+          "include": "#expression-short-css-double-quote"
         },
         {
           "include": "#variant-group-expression"
