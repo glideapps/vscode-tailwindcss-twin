@@ -3,14 +3,14 @@
   "displayName": "Tailwind Twin IntelliSense - Glide",
   "description": "Glide version of Tailwind VSCode Extension for twin.macro",
   "version": "0.12.2",
-  "author": "lightyen",
+  "author": "Glide",
   "license": "MIT",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/lightyen/vscode-tailwindcss-twin.git"
+    "url": "https://github.com/glideapps/vscode-tailwindcss-twin.git"
   },
-  "publisher": "lightyen",
+  "publisher": "Glide",
   "categories": [
     "Programming Languages"
   ],
