@@ -198,6 +198,10 @@ export function twin(context: ContextModule): Tailwind.ConfigJS {
 				addSelector("page-xl", ".page-xl &")
 				addSelector("page-2xl", ".page-2xl &")
 
+				addSelector("page-hover", ".is-hoverable &:hover")
+				addSelector("no-hover", ":not(.is-hoverable &)")
+				addSelector("group-page-hover", ".is-hoverable .group:hover &")
+
 				return
 
 				function addMedia(variant: string, value: string) {
