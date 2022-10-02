@@ -37,7 +37,7 @@ Then go to VSCode and open up your command palate and enter:
 
 Navigate to the location where you cloned the `vscode-tailwindcss-twin` repo where you'll find the VSIX file called:
 
-`tailwindcss-intellisense-twin-0.8.5.vsix`
+`tailwindcss-intellisense-twin-glide-0.12.2.vsix`
 
 It will ask you to restart your VScode, Restart it.
 
